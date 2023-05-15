@@ -1,28 +1,31 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
+const cors = require('cors');
 const helmet = require('helmet');
-
-const routes = require('./routes/router');
+const serverError = require('./middlewares/serverError');
+const router = require('./routes/router');
+const { requestLogger, errorLogger } = require('./utils/Logger');
 
 const { PORT = 3000 } = process.env;
 const app = express();
 
-app.use(helmet());
-app.disable('x-powered-by');
+// преобразуем в строку
 app.use(express.json());
+// подключение роутеров
+app.use(router);
+// обработка ошибок
+app.use(errors());
+app.use(serverError);
+app.use(cors());
+// заголовки
+app.use(helmet());
+// логгер запросов
+app.use(requestLogger);
+// логгер ошибок
+app.use(errorLogger);
 
-app.use((req, res, next) => {
-  req.user = {
-    // ID from mongoshell
-    _id: '6452a9019eb51e7aa91a3c30',
-  };
-
-  next();
-});
-
-app.use(routes);
-
-// after mongoshell:
+// connect mongoshell:
 mongoose
   .connect('mongodb://127.0.0.1:27017/mestodb')
   .then(() => {
