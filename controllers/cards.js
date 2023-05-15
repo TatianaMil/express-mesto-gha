@@ -12,13 +12,12 @@ module.exports.getInitialCards = (req, res, next) => {
 
 // create a new card from the server
 module.exports.createNewCardApi = (req, res, next) => {
-  console.log(req.user._id);
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при создании карточки.'));
         return;
       }
@@ -71,7 +70,7 @@ module.exports.removeLike = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail()
+    .orFail(() => { throw new NotFoundError('Передан несуществующий _id карточки'); })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'CastError') {

@@ -80,7 +80,7 @@ module.exports.getUser = (req, res, next) => {
       res.status(200).json(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
         return;
       }

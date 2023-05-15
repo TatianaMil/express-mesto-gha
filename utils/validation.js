@@ -14,7 +14,7 @@ const validationUrl = (url) => {
 // validation usrer ID
 const userIdValidation = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().required().hex().min(24),
+    userId: Joi.string().required().hex().length(24),
   }),
 });
 
@@ -44,7 +44,7 @@ const createCardValidation = celebrate({
 // validation id card
 const cardIdValidation = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().required().hex().min(24),
+    cardId: Joi.string().required().hex().length(24),
   }),
 });
 
