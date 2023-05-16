@@ -103,13 +103,14 @@ module.exports.editProfileUserApi = (req, res, next) => {
         avatar: user.avatar,
       });
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
-        return;
-      }
-      next(err);
-    });
+    .catch(next);
+  // .catch((err) => {
+  //   if (err.name === 'ValidationError') {
+  //     next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
+  //     return;
+  //   }
+  //   next(err);
+  // });
 };
 
 // avatar update
