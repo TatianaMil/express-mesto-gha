@@ -79,13 +79,14 @@ module.exports.getUser = (req, res, next) => {
     .then((user) => {
       res.status(200).json(user);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
-        return;
-      }
-      next(err);
-    });
+    .catch(next);
+  // .catch((err) => {
+  //   if (err.name === 'CastError') {
+  //     next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
+  //     return;
+  //   }
+  //   next(err);
+  // });
 };
 
 // edit profile
@@ -103,14 +104,13 @@ module.exports.editProfileUserApi = (req, res, next) => {
         avatar: user.avatar,
       });
     })
-    .catch(next);
-  // .catch((err) => {
-  //   if (err.name === 'ValidationError') {
-  //     next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
-  //     return;
-  //   }
-  //   next(err);
-  // });
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
+        return;
+      }
+      next(err);
+    });
 };
 
 // avatar update
